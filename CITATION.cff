@@ -54,7 +54,6 @@ preferred-citation:
   year: 2026
   conference:
     name: "International Conference on Machine Learning (ICML)"
-notes: "Juncheng Wu, Hardy Chen, and Haoqin Tu contributed equally."
 repository-code: "https://github.com/UCSC-VLAA/VLM-CapCurriculum"
 url: "https://ucsc-vlaa.github.io/VLM-CapCurriculum"
 license: Apache-2.0
