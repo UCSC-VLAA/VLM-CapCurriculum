@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VLM-CapCurriculum — From Seeing to Thinking · ICML 2026</title>
+<meta name="description" content="Decoupling perception and reasoning improves post-training of vision-language models. ICML 2026 paper, code, models, and datasets." />
+<meta property="og:title" content="VLM-CapCurriculum: From Seeing to Thinking" />
+<meta property="og:description" content="See first, then think — a capability-axis curriculum for VLM post-training. ICML 2026." />
+<meta property="og:image" content="./images/teaser.png" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          accent: {
+            50:  '#eff6ff',
+            100: '#dbeafe',
+            300: '#93c5fd',
+            400: '#60a5fa',
+            500: '#3b82f6',
+            600: '#2563eb',
+            700: '#1d4ed8',
+          },
+        },
+      },
+    },
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  /* Subtle background grid behind the hero */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right,  rgba(148,163,184,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148,163,184,0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  /* Soft glow under the hero */
+  .hero-glow::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(60% 50% at 50% 0%, rgba(59,130,246,0.18), transparent 60%);
+    pointer-events: none;
+  }
+  /* Number callout */
+  .pct {
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Tab buttons */
+  .tab-btn[aria-selected="true"] {
+    background-color: #1e293b;       /* slate-800 */
+    color: #f8fafc;                  /* slate-50 */
+    border-color: #1e293b;
+  }
+  .tab-btn[aria-selected="true"] .tab-delta { color: #93c5fd; }
+  /* Lightbox */
+  .lightbox-active { overflow: hidden; }
+  .lightbox-fade { transition: opacity .15s ease-out; }
+  /* Anchor offset */
+  section[id] { scroll-margin-top: 4rem; }
+</style>
+</head>
+
+<body class="font-sans bg-slate-50 text-slate-800 antialiased">
+
+<!-- ─────────────────────── Top nav ─────────────────────── -->
+<nav class="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between text-sm">
+    <a href="#" class="font-semibold text-slate-900">VLM-CapCurriculum</a>
+    <div class="hidden md:flex gap-6 text-slate-600">
+      <a href="#abstract" class="hover:text-slate-900">Abstract</a>
+      <a href="#findings" class="hover:text-slate-900">Findings</a>
+      <a href="#method" class="hover:text-slate-900">Method</a>
+      <a href="#results" class="hover:text-slate-900">Results</a>
+      <a href="#curriculum" class="hover:text-slate-900">Curriculum</a>
+      <a href="#case-study" class="hover:text-slate-900">Case study</a>
+      <a href="#resources" class="hover:text-slate-900">Resources</a>
+      <a href="#cite" class="hover:text-slate-900">Cite</a>
+    </div>
+    <a href="https://github.com/UCSC-VLAA/VLM-CapCurriculum" class="ml-4 inline-flex items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-700">
+      <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-1.93c-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.27-5.24-5.65 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.16 1.17a10.95 10.95 0 0 1 5.76 0c2.2-1.48 3.16-1.17 3.16-1.17.62 1.59.23 2.76.11 3.05.74.8 1.18 1.82 1.18 3.07 0 4.39-2.69 5.36-5.25 5.64.41.36.78 1.07.78 2.16v3.2c0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+      Code
+    </a>
+  </div>
+</nav>
+
+<!-- ─────────────────────── Hero ─────────────────────── -->
+<header class="relative overflow-hidden bg-slate-900 text-slate-100 hero-glow">
+  <div class="bg-grid absolute inset-0 opacity-50"></div>
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 text-center">
+    <p class="uppercase tracking-[0.2em] text-xs text-accent-300 mb-4">ICML 2026</p>
+    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight">
+      From Seeing to Thinking
+    </h1>
+    <p class="mt-3 text-lg sm:text-2xl text-slate-300 font-medium">
+      Decoupling Perception and Reasoning Improves<br class="hidden sm:inline" />
+      Post-Training of Vision-Language Models
+    </p>
+
+    <p class="mt-6 italic text-slate-400 max-w-2xl mx-auto">
+      <span class="text-slate-200 font-medium">See first, then think.</span>
+      Visual perception — not reasoning length — is the dominant bottleneck for VLMs.
+      We post-train along a new <span class="text-slate-200 font-medium">capability axis</span>,
+      orthogonal to the classic difficulty curriculum.
+    </p>
+
+    <p class="mt-6 text-sm text-slate-400">
+      <span class="italic">Author list TBD</span> · <span class="text-accent-300">UCSC-VLAA</span>
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-2 text-sm">
+      <a href="#" class="inline-flex items-center gap-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 text-slate-200">
+        📄 Paper <span class="text-slate-400">(coming soon)</span>
+      </a>
+      <a href="https://github.com/UCSC-VLAA/VLM-CapCurriculum" class="inline-flex items-center gap-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 text-slate-200">
+        💻 Code
+      </a>
+      <a href="https://huggingface.co/collections/UCSC-VLAA/vlm-capcurriculum-from-seeing-to-thinking-icml-2026-6a07691f944148ccb2b183b8" class="inline-flex items-center gap-1.5 rounded-md bg-accent-600 hover:bg-accent-500 px-3 py-1.5 text-white">
+        🤗 Models &amp; Data
+      </a>
+      <a href="#cite" class="inline-flex items-center gap-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 text-slate-200">
+        📋 BibTeX
+      </a>
+    </div>
+
+    <!-- Headline numbers strip -->
+    <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+      <div class="rounded-lg border border-slate-700/60 bg-slate-800/40 px-4 py-3">
+        <div class="pct text-2xl font-bold text-white">86.9<span class="text-slate-400 text-base">%</span></div>
+        <div class="text-xs text-slate-400 mt-1">VLM errors are perception, not reasoning</div>
+      </div>
+      <div class="rounded-lg border border-slate-700/60 bg-slate-800/40 px-4 py-3">
+        <div class="pct text-2xl font-bold text-white">+1.46<span class="text-slate-400 text-base">%</span></div>
+        <div class="text-xs text-slate-400 mt-1">Math accuracy over merged baseline</div>
+      </div>
+      <div class="rounded-lg border border-slate-700/60 bg-slate-800/40 px-4 py-3">
+        <div class="pct text-2xl font-bold text-white">−20.8<span class="text-slate-400 text-base">%</span></div>
+        <div class="text-xs text-slate-400 mt-1">Shorter reasoning traces</div>
+      </div>
+      <div class="rounded-lg border border-slate-700/60 bg-slate-800/40 px-4 py-3">
+        <div class="pct text-2xl font-bold text-white">4 / 4</div>
+        <div class="text-xs text-slate-400 mt-1">Backbones improved over merged</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────────────────── Abstract + teaser (two columns) ─────────────────────── -->
+<section id="abstract" class="max-w-6xl mx-auto px-4 sm:px-6 -mt-10 relative z-10">
+  <div class="grid lg:grid-cols-5 gap-6 lg:gap-10 items-start">
+
+    <!-- Left: abstract text -->
+    <div class="lg:col-span-3 rounded-2xl bg-white shadow-xl ring-1 ring-slate-200 p-6 sm:p-8">
+      <h2 class="text-2xl font-bold text-slate-900">Abstract</h2>
+      <p class="mt-4 text-slate-700 leading-relaxed">
+        Recent advances in VLMs emphasize long chain-of-thought reasoning; yet
+        we find that performance on visual tasks is primarily limited by a
+        lack of <em>visual perception</em>, not reasoning. We systematically
+        decompose VLM post-training into three capability stages — visual
+        perception, textual reasoning, visual reasoning — and show three
+        things that change how to post-train a VLM:
+      </p>
+      <ul class="mt-4 space-y-3 text-slate-700">
+        <li class="flex gap-3">
+          <span class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md bg-accent-50 text-accent-700 text-xs font-bold ring-1 ring-accent-100">a</span>
+          <span>
+            <strong class="text-slate-900">Perception needs its own data.</strong>
+            Reasoning data alone introduces a "perceptual tax"; dedicated
+            perception samples lift visual benchmarks without sacrificing
+            reasoning gains.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md bg-accent-50 text-accent-700 text-xs font-bold ring-1 ring-accent-100">b</span>
+          <span>
+            <strong class="text-slate-900">Capability is a new curriculum axis.</strong>
+            Beyond difficulty, training data can be ordered by the
+            <em>capability</em> it targets. The two axes are orthogonal and
+            <strong class="text-accent-700">additive</strong>:
+            combining them lifts Qwen3-VL-8B from 58.56 → 62.99.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md bg-accent-50 text-accent-700 text-xs font-bold ring-1 ring-accent-100">c</span>
+          <span>
+            <strong class="text-slate-900">Stage order matters.</strong>
+            <span class="font-medium">Perception → textual reasoning → visual reasoning</span>
+            works; reversing it
+            (visual&nbsp;→&nbsp;textual&nbsp;→&nbsp;perception) drops
+            visual-math accuracy by 4.6&nbsp;pts. Perception is the scaffold
+            that has to come first.
+          </span>
+        </li>
+      </ul>
+      <p class="mt-5 text-slate-700 leading-relaxed">
+        Across four backbones the staged recipe lifts accuracy while producing
+        <strong>20.8% shorter</strong> reasoning traces — better seeing means
+        less thinking.
+      </p>
+    </div>
+
+    <!-- Right: teaser figure (vertical) -->
+    <figure class="lg:col-span-2 rounded-2xl bg-white shadow-xl ring-1 ring-slate-200 p-3 sm:p-5">
+      <img data-lightbox src="./images/teaser.png" alt="Teaser: longer thinking can not fix incorrect perception" class="rounded-lg w-full cursor-zoom-in" />
+      <figcaption class="text-sm text-slate-500 mt-3 text-center px-2">
+        <span class="font-medium text-slate-700">Longer thinking cannot fix incorrect perception.</span>
+        Re-checking the image during reasoning leads to the same perception
+        error (Case&nbsp;A). When perception is correct, reasoning is concise
+        and converges quickly (Case&nbsp;B).
+      </figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<!-- ─────────────────────── Findings ─────────────────────── -->
+<section id="findings" class="bg-white border-y border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+    <h2 class="text-2xl font-bold text-slate-900">Three findings</h2>
+    <p class="mt-1 text-slate-500">What changed our minds about VLM post-training.</p>
+
+    <div class="mt-8 grid md:grid-cols-3 gap-5">
+      <div class="rounded-xl bg-slate-50 ring-1 ring-slate-200 p-5">
+        <div class="text-sm font-mono text-accent-600">(a)</div>
+        <h3 class="mt-1 font-semibold text-slate-900">Perception needs its own data</h3>
+        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+          Reasoning data alone introduces a "perceptual tax" — adding dedicated
+          perception samples lifts <span class="font-mono">RealWorldQA</span>
+          by <strong>+3.7%</strong> and stabilises <span class="font-mono">MMStar</span>.
+        </p>
+      </div>
+      <div class="rounded-xl bg-slate-50 ring-1 ring-slate-200 p-5">
+        <div class="text-sm font-mono text-accent-600">(b)</div>
+        <h3 class="mt-1 font-semibold text-slate-900">Capability — a new curriculum axis</h3>
+        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+          Beyond difficulty, training data can be ordered by the
+          <em>capability</em> it targets. The two axes are orthogonal and
+          <strong>additive</strong>: combining them lifts Qwen3-VL-8B from
+          58.56 → <strong>62.99</strong>.
+        </p>
+      </div>
+      <div class="rounded-xl bg-slate-50 ring-1 ring-slate-200 p-5">
+        <div class="text-sm font-mono text-accent-600">(c)</div>
+        <h3 class="mt-1 font-semibold text-slate-900">Stage order matters</h3>
+        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+          <span class="font-medium text-slate-800">Perception → textual reasoning → visual reasoning</span>
+          is the right order. Flipping it to
+          <span class="font-medium text-slate-800">visual reasoning → textual reasoning → perception</span>
+          drops the visual-math average by <strong>4.6&nbsp;pts</strong> on Qwen2.5-VL-7B —
+          perception is the scaffold that has to come first.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Method pipeline ─────────────────────── -->
+<section id="method" class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+  <h2 class="text-2xl font-bold text-slate-900">Method</h2>
+  <p class="mt-1 text-slate-500">Three stages, one unified prompt, GRPO end-to-end.</p>
+
+  <figure class="mt-6 rounded-2xl bg-white shadow-md ring-1 ring-slate-200 p-3 sm:p-5">
+    <img data-lightbox src="./images/pipeline.png" alt="Pipeline: Stage 1 perception → Stage 2 textual reasoning → Stage 3 visual reasoning" class="rounded-lg w-full cursor-zoom-in" />
+    <figcaption class="text-sm text-slate-500 mt-3 text-center px-2">
+      We synthesise perception data from DOCCI captions, filter to keep only
+      samples a strong VLM misses from the image but solves from the caption,
+      then run GRPO across three stages with a single shared system prompt.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ─────────────────────── Main results table (tabbed) ─────────────────────── -->
+<section id="results" class="bg-white border-y border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+    <h2 class="text-2xl font-bold text-slate-900">Staged &gt; Merged across four backbones</h2>
+    <p class="mt-1 text-slate-500">Same data budget, same total steps. The only thing that changes is the schedule.</p>
+
+    <div class="mt-5 grid md:grid-cols-2 gap-4 text-sm leading-relaxed">
+      <div class="rounded-xl ring-1 ring-slate-200 bg-slate-50 p-5">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center text-xs font-semibold rounded-md bg-slate-200 text-slate-700 px-2 py-0.5">Merged</span>
+          <span class="text-slate-500 text-xs">baseline — common practice</span>
+        </div>
+        <p class="mt-2 text-slate-600">
+          All three capability datasets (perception ∪ textual&nbsp;reasoning ∪
+          visual&nbsp;reasoning) are <strong>pooled and shuffled</strong>, then
+          trained jointly with GRPO for the same total number of steps as the
+          staged recipe.
+        </p>
+      </div>
+      <div class="rounded-xl ring-2 ring-accent-300 bg-accent-50/60 p-5">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center text-xs font-semibold rounded-md bg-accent-600 text-white px-2 py-0.5">Staged (ours)</span>
+          <span class="text-slate-500 text-xs">capability-axis curriculum</span>
+        </div>
+        <p class="mt-2 text-slate-700">
+          The same data, run sequentially as
+          <span class="font-medium text-slate-900">perception → textual reasoning → visual reasoning</span>,
+          with each stage trained for the same number of epochs.
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-4 text-sm text-slate-500">Click a backbone to switch the table.</p>
+
+    <!-- Tabs -->
+    <div role="tablist" class="mt-6 flex flex-wrap gap-2 text-sm" id="result-tabs">
+      <button role="tab" aria-selected="true"  data-tab="qwen3"
+        class="tab-btn rounded-md border border-slate-300 px-3 py-2 text-slate-700 bg-white hover:bg-slate-50">
+        Qwen3-VL-8B
+        <span class="tab-delta block text-xs text-accent-600 font-semibold">+3.37 over merged</span>
+      </button>
+      <button role="tab" aria-selected="false" data-tab="qwen25"
+        class="tab-btn rounded-md border border-slate-300 px-3 py-2 text-slate-700 bg-white hover:bg-slate-50">
+        Qwen2.5-VL-7B
+        <span class="tab-delta block text-xs text-slate-500 font-semibold">+1.62 over merged</span>
+      </button>
+      <button role="tab" aria-selected="false" data-tab="iv3"
+        class="tab-btn rounded-md border border-slate-300 px-3 py-2 text-slate-700 bg-white hover:bg-slate-50">
+        InternVL3-8B
+        <span class="tab-delta block text-xs text-slate-500 font-semibold">+3.77 over merged</span>
+      </button>
+      <button role="tab" aria-selected="false" data-tab="iv35"
+        class="tab-btn rounded-md border border-slate-300 px-3 py-2 text-slate-700 bg-white hover:bg-slate-50">
+        InternVL3.5-8B
+        <span class="tab-delta block text-xs text-slate-500 font-semibold">+0.95 over merged</span>
+      </button>
+    </div>
+
+    <!-- Panels -->
+    <div class="mt-5 overflow-x-auto rounded-xl ring-1 ring-slate-200 bg-slate-50/50">
+      <table class="min-w-full text-sm pct">
+        <thead class="bg-slate-100 text-slate-700">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold">Setting</th>
+            <th class="px-4 py-3 text-right font-semibold" title="MathVista / MathVision / MathVerse(VI) / WeMath average">Visual Math&nbsp;AVG</th>
+            <th class="px-4 py-3 text-right font-semibold" title="A-OKVQA / RealWorldQA / MMStar / POPE average">Perception&nbsp;AVG</th>
+            <th class="px-4 py-3 text-right font-semibold">Overall&nbsp;AVG</th>
+          </tr>
+        </thead>
+        <tbody id="result-body" class="divide-y divide-slate-200 bg-white"></tbody>
+      </table>
+    </div>
+    <p class="text-xs text-slate-500 mt-2">Visual math = MathVista / MathVision / MathVerse(VI) / WeMath. Perception = A-OKVQA / RealWorldQA / MMStar / POPE. Best per column in <strong>bold</strong>.</p>
+  </div>
+</section>
+
+<!-- ─────────────────────── Capability × Difficulty curriculum ─────────────────────── -->
+<section id="curriculum" class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+  <h2 class="text-2xl font-bold text-slate-900">A new curriculum dimension</h2>
+  <p class="mt-1 text-slate-500">Capability axis × Difficulty axis — orthogonal, additive.</p>
+
+  <div class="mt-6 grid lg:grid-cols-5 gap-6 items-start">
+    <!-- 2×2 grid diagram -->
+    <div class="lg:col-span-3 rounded-2xl bg-white ring-1 ring-slate-200 p-6 shadow-sm">
+      <div class="grid grid-cols-2 gap-3 text-center text-sm">
+        <div class="rounded-lg p-4 bg-slate-50 ring-1 ring-slate-200">
+          <div class="font-medium text-slate-700">Capability ✓ &nbsp;·&nbsp; Difficulty ✗</div>
+          <div class="mt-2 text-2xl font-bold text-accent-700 pct">60.53</div>
+          <div class="text-xs text-slate-500">our staged recipe</div>
+        </div>
+        <div class="rounded-lg p-4 bg-accent-600/95 text-white ring-2 ring-accent-700">
+          <div class="font-medium">Capability ✓ &nbsp;·&nbsp; Difficulty ✓</div>
+          <div class="mt-2 text-2xl font-bold pct">62.99</div>
+          <div class="text-xs text-accent-100">additive sweet spot</div>
+        </div>
+        <div class="rounded-lg p-4 bg-slate-50 ring-1 ring-slate-200">
+          <div class="font-medium text-slate-700">Capability ✗ &nbsp;·&nbsp; Difficulty ✗</div>
+          <div class="mt-2 text-2xl font-bold text-slate-700 pct">58.56</div>
+          <div class="text-xs text-slate-500">merged baseline</div>
+        </div>
+        <div class="rounded-lg p-4 bg-slate-50 ring-1 ring-slate-200">
+          <div class="font-medium text-slate-700">Capability ✗ &nbsp;·&nbsp; Difficulty ✓</div>
+          <div class="mt-2 text-2xl font-bold text-slate-700 pct">60.36</div>
+          <div class="text-xs text-slate-500">prior curriculum work</div>
+        </div>
+      </div>
+      <div class="mt-3 text-center text-xs text-slate-500">Average over 7 benchmarks on Qwen3-VL-8B (paper §4.5).</div>
+    </div>
+
+    <!-- Sidebar explanation -->
+    <div class="lg:col-span-2 text-slate-700 leading-relaxed">
+      <p>
+        Curriculum learning has historically meant <em>ordering training samples by
+        difficulty</em>. Our staged recipe surfaces a second, orthogonal axis:
+        <strong>what capability each batch trains.</strong>
+      </p>
+      <p class="mt-3">
+        Empirically the two axes <strong>stack additively</strong> — combining
+        them lifts Qwen3-VL-8B from 58.56 to <strong class="text-accent-700">62.99</strong>,
+        beating either axis alone by &gt;&nbsp;2&nbsp;pts. This reframes
+        post-training as choosing a <em>trajectory through a 2D space</em> rather
+        than along a single difficulty line.
+      </p>
+      <a href="https://github.com/UCSC-VLAA/VLM-CapCurriculum/tree/main/training/examples/curriculum"
+         class="mt-4 inline-block text-sm text-accent-700 hover:text-accent-500">
+        Launch scripts → training/examples/curriculum/
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Case study + length figure ─────────────────────── -->
+<section id="case-study" class="bg-white border-y border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+    <h2 class="text-2xl font-bold text-slate-900">Better perception ⇒ shorter reasoning</h2>
+    <p class="mt-1 text-slate-500">Same problem, two trajectories. Staged sees correctly the first time and stops; merged loops on a wrong perception.</p>
+
+    <figure class="mt-6 rounded-2xl bg-slate-50 ring-1 ring-slate-200 p-3 sm:p-5">
+      <img data-lightbox src="./images/case_merged_staged.png" alt="Side-by-side case study: merged training keeps re-checking the image with the same perception error; staged training perceives correctly and answers concisely." class="rounded-lg w-full cursor-zoom-in" />
+      <figcaption class="text-sm text-slate-500 mt-3 text-center px-2">
+        Merged training assigns the side of length 73 to the wrong angle and re-checks the image repeatedly with the same error. Staged training perceives correctly and the chain of thought terminates quickly.
+      </figcaption>
+    </figure>
+
+    <figure class="mt-8 rounded-2xl bg-white ring-1 ring-slate-200 p-3 sm:p-5">
+      <img data-lightbox src="./images/response_length_comparison.png" alt="Validation response length over training steps: staged training drops below merged in Stage 3" class="rounded-lg w-full cursor-zoom-in" />
+      <figcaption class="text-sm text-slate-500 mt-3 text-center px-2">
+        Average validation response length on Qwen3-VL-8B. Staged matches merged in Stage&nbsp;2 and diverges in Stage&nbsp;3, ending <strong>−20.8%</strong> shorter while accuracy is <strong>+1.46&nbsp;pts</strong> higher.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────────────────── Resources ─────────────────────── -->
+<section id="resources" class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+  <h2 class="text-2xl font-bold text-slate-900">Resources</h2>
+  <p class="mt-1 text-slate-500">Everything needed to reproduce the paper.</p>
+
+  <div class="mt-6 grid md:grid-cols-2 gap-4">
+    <a class="rounded-xl ring-1 ring-slate-200 bg-white p-5 hover:bg-slate-50 transition" href="https://github.com/UCSC-VLAA/VLM-CapCurriculum">
+      <div class="text-xs uppercase tracking-wider text-slate-500">GitHub</div>
+      <div class="mt-1 font-semibold text-slate-900">UCSC-VLAA/VLM-CapCurriculum</div>
+      <div class="mt-2 text-sm text-slate-600">Data pipeline, training scripts, evaluation patches, quickstart for Qwen3-VL-8B-Staged.</div>
+    </a>
+    <a class="rounded-xl ring-1 ring-slate-200 bg-white p-5 hover:bg-slate-50 transition" href="https://huggingface.co/collections/UCSC-VLAA/vlm-capcurriculum-from-seeing-to-thinking-icml-2026-6a07691f944148ccb2b183b8">
+      <div class="text-xs uppercase tracking-wider text-slate-500">🤗 Collection</div>
+      <div class="mt-1 font-semibold text-slate-900">VLM-CapCurriculum (ICML 2026)</div>
+      <div class="mt-2 text-sm text-slate-600">All four staged-training models and three capability-stage datasets in one hub.</div>
+    </a>
+  </div>
+
+  <div class="mt-4 grid md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/UCSC-VLAA/VLM-CapCurriculum-Qwen3-VL-8B-Staged">
+      <div class="text-slate-500 text-xs">model</div>
+      <div class="font-medium text-slate-900">Qwen3-VL-8B-Staged</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/UCSC-VLAA/VLM-CapCurriculum-Qwen2.5-VL-7B-Staged">
+      <div class="text-slate-500 text-xs">model</div>
+      <div class="font-medium text-slate-900">Qwen2.5-VL-7B-Staged</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/UCSC-VLAA/VLM-CapCurriculum-InternVL3-8B-Staged">
+      <div class="text-slate-500 text-xs">model</div>
+      <div class="font-medium text-slate-900">InternVL3-8B-Staged</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/UCSC-VLAA/VLM-CapCurriculum-InternVL3.5-8B-Staged">
+      <div class="text-slate-500 text-xs">model</div>
+      <div class="font-medium text-slate-900">InternVL3.5-8B-Staged</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-Perception-Data">
+      <div class="text-slate-500 text-xs">dataset</div>
+      <div class="font-medium text-slate-900">Perception-Data</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-TextReasoning-Data">
+      <div class="text-slate-500 text-xs">dataset</div>
+      <div class="font-medium text-slate-900">TextReasoning-Data</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-VisualReasoning-Data">
+      <div class="text-slate-500 text-xs">dataset</div>
+      <div class="font-medium text-slate-900">VisualReasoning-Data</div>
+    </a>
+    <a class="rounded-lg ring-1 ring-slate-200 bg-white px-4 py-3 hover:bg-slate-50" href="https://github.com/UCSC-VLAA/VLM-CapCurriculum#roadmap">
+      <div class="text-slate-500 text-xs">roadmap</div>
+      <div class="font-medium text-slate-900">What's still pending</div>
+    </a>
+  </div>
+</section>
+
+<!-- ─────────────────────── BibTeX ─────────────────────── -->
+<section id="cite" class="bg-white border-y border-slate-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+    <h2 class="text-2xl font-bold text-slate-900">Cite</h2>
+    <div class="relative mt-4 rounded-xl bg-slate-900 text-slate-100 p-5">
+      <button id="copy-bibtex" class="absolute top-3 right-3 text-xs rounded-md bg-slate-700 hover:bg-slate-600 px-2.5 py-1.5 text-slate-100">
+        Copy
+      </button>
+      <pre class="font-mono text-sm overflow-x-auto leading-relaxed whitespace-pre"><code id="bibtex-block">@inproceedings{vlmcapcurriculum2026,
+  title  = {From Seeing to Thinking: Decoupling Perception and Reasoning Improves Post-Training of Vision-Language Models},
+  author = {TBD},
+  booktitle = {Proceedings of the International Conference on Machine Learning (ICML)},
+  year   = {2026}
+}</code></pre>
+    </div>
+    <p class="mt-3 text-sm text-slate-500">Author list and final bibinfo will be filled in once the paper is de-anonymized — see the <a class="text-accent-700 hover:text-accent-500" href="https://github.com/UCSC-VLAA/VLM-CapCurriculum#roadmap">Roadmap</a>.</p>
+  </div>
+</section>
+
+<!-- ─────────────────────── Footer ─────────────────────── -->
+<footer class="bg-slate-900 text-slate-400 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="text-slate-200 font-semibold">VLM-CapCurriculum</div>
+        <div class="text-xs">Released under Apache-2.0 · UCSC-VLAA</div>
+      </div>
+      <div class="flex gap-3">
+        <a class="hover:text-slate-100" href="https://github.com/UCSC-VLAA/VLM-CapCurriculum">GitHub</a>
+        <span class="text-slate-700">·</span>
+        <a class="hover:text-slate-100" href="https://huggingface.co/UCSC-VLAA">HuggingFace</a>
+        <span class="text-slate-700">·</span>
+        <a class="hover:text-slate-100" href="https://github.com/UCSC-VLAA/VLM-CapCurriculum/issues">Report an issue</a>
+      </div>
+    </div>
+    <div class="mt-6 text-xs text-slate-500">
+      Built on top of <a class="hover:text-slate-300" href="https://github.com/hiyouga/EasyR1">EasyR1</a>,
+      <a class="hover:text-slate-300" href="https://github.com/open-compass/VLMEvalKit">VLMEvalKit</a>,
+      <a class="hover:text-slate-300" href="https://huggingface.co/Qwen">Qwen</a>,
+      <a class="hover:text-slate-300" href="https://huggingface.co/OpenGVLab">InternVL</a>,
+      <a class="hover:text-slate-300" href="https://google.github.io/docci/">DOCCI</a>.
+    </div>
+  </div>
+</footer>
+
+<!-- ─────────────────────── Lightbox modal ─────────────────────── -->
+<div id="lightbox" class="hidden fixed inset-0 z-50 bg-black/85 lightbox-fade">
+  <button id="lightbox-close" aria-label="Close" class="absolute top-4 right-4 text-white text-3xl leading-none">&times;</button>
+  <img id="lightbox-img" alt="" class="absolute inset-0 m-auto max-w-[92vw] max-h-[92vh] rounded-lg shadow-2xl" />
+</div>
+
+<!-- ─────────────────────── Scripts ─────────────────────── -->
+<script>
+// Result-table tab data
+const tableRows = {
+  qwen3: [
+    { label: 'Base',                    vmath: 45.17, perc: 79.21, overall: 62.19, bestCol: null },
+    { label: 'Merged training',         vmath: 49.64, perc: 79.71, overall: 64.67, bestCol: null },
+    { label: 'Staged (ours)',           vmath: 51.10, perc: 80.44, overall: 65.77, bestCol: 'all', highlight: true },
+    { label: 'OneThinker-8B (concur.)', vmath: 51.10, perc: 78.64, overall: 64.87, bestCol: null },
+  ],
+  qwen25: [
+    { label: 'Base',                    vmath: 37.03, perc: 76.33, overall: 56.68, bestCol: null },
+    { label: 'Merged training',         vmath: 40.74, perc: 75.95, overall: 58.34, bestCol: null },
+    { label: 'Staged (ours)',           vmath: 42.26, perc: 77.24, overall: 59.75, bestCol: 'all', highlight: true },
+  ],
+  iv3: [
+    { label: 'Base',                    vmath: null,  perc: null,  overall: 29.69, bestCol: null, note: 'extended-bench AVG' },
+    { label: 'Merged training',         vmath: null,  perc: null,  overall: 41.94, bestCol: null, note: 'extended-bench AVG' },
+    { label: 'Staged (ours)',           vmath: null,  perc: null,  overall: 45.71, bestCol: 'overall', highlight: true, note: 'extended-bench AVG' },
+  ],
+  iv35: [
+    { label: 'Base',                    vmath: null,  perc: null,  overall: 37.33, bestCol: null, note: 'extended-bench AVG' },
+    { label: 'Merged training',         vmath: null,  perc: null,  overall: 52.76, bestCol: null, note: 'extended-bench AVG' },
+    { label: 'Staged (ours)',           vmath: null,  perc: null,  overall: 53.71, bestCol: 'overall', highlight: true, note: 'extended-bench AVG' },
+  ],
+};
+
+function renderTable(tab) {
+  const rows = tableRows[tab];
+  const tbody = document.getElementById('result-body');
+  const fmt = v => v == null ? '<span class="text-slate-300">—</span>' : v.toFixed(2);
+  const cellCls = (val, isBest, highlightRow) => {
+    let cls = 'px-4 py-2.5 text-right';
+    if (isBest) cls += ' font-bold';
+    if (highlightRow) cls += ' text-accent-700';
+    return cls;
+  };
+  tbody.innerHTML = rows.map(r => {
+    const isBestVMath   = r.bestCol === 'all' || r.bestCol === 'vmath';
+    const isBestPerc    = r.bestCol === 'all' || r.bestCol === 'perc';
+    const isBestOverall = r.bestCol === 'all' || r.bestCol === 'overall';
+    const rowCls = r.highlight
+      ? 'bg-accent-50/60'
+      : '';
+    const labelCls = r.highlight
+      ? 'px-4 py-2.5 font-semibold text-slate-900'
+      : 'px-4 py-2.5 text-slate-700';
+    return `<tr class="${rowCls}">
+      <td class="${labelCls}">${r.label}${r.note ? `<span class="text-xs text-slate-400 font-normal ml-1">(${r.note})</span>` : ''}</td>
+      <td class="${cellCls(r.vmath, isBestVMath, r.highlight)}">${fmt(r.vmath)}</td>
+      <td class="${cellCls(r.perc, isBestPerc, r.highlight)}">${fmt(r.perc)}</td>
+      <td class="${cellCls(r.overall, isBestOverall, r.highlight)}">${fmt(r.overall)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Tabs
+document.querySelectorAll('#result-tabs .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#result-tabs .tab-btn').forEach(b => b.setAttribute('aria-selected', 'false'));
+    btn.setAttribute('aria-selected', 'true');
+    renderTable(btn.dataset.tab);
+  });
+});
+renderTable('qwen3');
+
+// Lightbox
+const lb     = document.getElementById('lightbox');
+const lbImg  = document.getElementById('lightbox-img');
+const lbClose= document.getElementById('lightbox-close');
+const open = src => {
+  lbImg.src = src;
+  lb.classList.remove('hidden');
+  document.documentElement.classList.add('lightbox-active');
+};
+const close = () => {
+  lb.classList.add('hidden');
+  lbImg.src = '';
+  document.documentElement.classList.remove('lightbox-active');
+};
+document.querySelectorAll('img[data-lightbox]').forEach(img => {
+  img.addEventListener('click', () => open(img.src));
+});
+lb.addEventListener('click', e => { if (e.target === lb) close(); });
+lbClose.addEventListener('click', close);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+// Copy BibTeX
+const copyBtn = document.getElementById('copy-bibtex');
+copyBtn.addEventListener('click', async () => {
+  const text = document.getElementById('bibtex-block').innerText;
+  try {
+    await navigator.clipboard.writeText(text);
+    const old = copyBtn.textContent;
+    copyBtn.textContent = 'Copied ✓';
+    setTimeout(() => { copyBtn.textContent = old; }, 1500);
+  } catch (err) {
+    copyBtn.textContent = 'Failed';
+  }
+});
+</script>
+</body>
+</html>

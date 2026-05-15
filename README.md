@@ -136,12 +136,13 @@ The repo is **paper-specific** — it does not vendor [EasyR1](https://github.co
 
 A few items are intentionally still in flight at first release. We track them here so contributors and readers know what to expect:
 
-- [ ] **Paper URL** — replace the OpenReview/arXiv placeholder once the camera-ready link is live. Touches: `CITATION.cff`, all four HF model cards, all three HF dataset cards.
-- [ ] **Author list** — replace the `TBD` author entries with the final author names + affiliations once de-anonymized. Touches: `CITATION.cff`, all seven HF cards.
-- [ ] **Project website** — populate [`ucsc-vlaa.github.io/VLM-CapCurriculum`](https://ucsc-vlaa.github.io/VLM-CapCurriculum) with a teaser, the headline tables, the staged-vs-merged case study figure, and download buttons that point at the HF collection. Plan: a small static site under a `docs/` (or `gh-pages`) branch in this repo.
-- [ ] **End-to-end smoke run** — boot the released `Qwen3-VL-8B-Staged` weights via the supplied `evaluation/serve_examples/serve_qwen3_vl_8b_staged.sh` and reproduce the Table 1 main numbers via `evaluation/run_eval.sh`. Document any version-pin gotchas.
-- [ ] **Optional `eval-results` dataset** — upload the raw VLMEvalKit outputs + Claude judge logs (per-sample, per-benchmark) as a fourth dataset repo, so others can audit the headline scores without re-running inference.
-- [ ] **Pinned versions** — emit a `requirements-pinned.txt` (vllm, transformers, EasyR1 commit, VLMEvalKit commit) once we re-verify the smoke run on a fresh box.
+- [ ] **Paper URL** — replace the OpenReview/arXiv placeholder once the camera-ready link is live. Touches: `CITATION.cff`, all four HF model cards, all three HF dataset cards, the project page hero.
+- [ ] **Author list** — replace the `TBD` author entries with the final author names + affiliations once de-anonymized. Touches: `CITATION.cff`, all seven HF cards, the project page hero (`docs/index.html`).
+- [ ] **Project website polish** — the static site under [`docs/`](./docs) is live at [`ucsc-vlaa.github.io/VLM-CapCurriculum`](https://ucsc-vlaa.github.io/VLM-CapCurriculum). Open placeholders to fill once the paper is ready:
+  - "Author list TBD" line in the hero (`docs/index.html`)
+  - the **Paper** button in the hero — currently links to `#`
+  - BibTeX block in the *Cite* section — `author = {TBD}`
+  - longer-term: replace the static result tables with rendered numbers pulled from `eval-results/` once that dataset exists.
 
 If any of these block your reproduction, please open an issue.
 
