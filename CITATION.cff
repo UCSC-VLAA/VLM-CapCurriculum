@@ -3,16 +3,58 @@ title: "From Seeing to Thinking: Decoupling Perception and Reasoning Improves Po
 message: "If you use this code or data, please cite the paper."
 type: software
 authors:
-  - family-names: TBD
-    given-names: TBD
+  - family-names: Wu
+    given-names: Juncheng
+    affiliation: "Amazon; UC Santa Cruz"
+    email: jwu418@ucsc.edu
+  - family-names: Chen
+    given-names: Hardy
+    affiliation: "UC Santa Cruz"
+  - family-names: Tu
+    given-names: Haoqin
+    affiliation: "UC Santa Cruz"
+  - family-names: Tang
+    given-names: Xianfeng
+  - family-names: Shi
+    given-names: Freda
+    affiliation: "University of Waterloo; Vector Institute"
+  - family-names: Liu
+    given-names: Hui
+  - family-names: Lu
+    given-names: Hanqing
+    affiliation: "Amazon"
+  - family-names: Xie
+    given-names: Cihang
+    affiliation: "UC Santa Cruz"
+  - family-names: Zhou
+    given-names: Yuyin
+    affiliation: "UC Santa Cruz"
 preferred-citation:
   type: conference-paper
   title: "From Seeing to Thinking: Decoupling Perception and Reasoning Improves Post-Training of Vision-Language Models"
   authors:
-    - family-names: TBD
-      given-names: TBD
+    - family-names: Wu
+      given-names: Juncheng
+    - family-names: Chen
+      given-names: Hardy
+    - family-names: Tu
+      given-names: Haoqin
+    - family-names: Tang
+      given-names: Xianfeng
+    - family-names: Shi
+      given-names: Freda
+    - family-names: Liu
+      given-names: Hui
+    - family-names: Lu
+      given-names: Hanqing
+    - family-names: Xie
+      given-names: Cihang
+    - family-names: Zhou
+      given-names: Yuyin
   year: 2026
   conference:
     name: "International Conference on Machine Learning (ICML)"
+notes: "Juncheng Wu, Hardy Chen, and Haoqin Tu contributed equally."
 repository-code: "https://github.com/UCSC-VLAA/VLM-CapCurriculum"
+url: "https://ucsc-vlaa.github.io/VLM-CapCurriculum"
 license: Apache-2.0

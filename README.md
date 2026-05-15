@@ -139,11 +139,9 @@ The repo is **paper-specific** — it does not vendor [EasyR1](https://github.co
 A few items are intentionally still in flight at first release. We track them here so contributors and readers know what to expect:
 
 - [ ] **Paper URL** — replace the OpenReview/arXiv placeholder once the camera-ready link is live. Touches: `CITATION.cff`, all four HF model cards, all three HF dataset cards, the project page hero.
-- [ ] **Author list** — replace the `TBD` author entries with the final author names + affiliations once de-anonymized. Touches: `CITATION.cff`, all seven HF cards, the project page hero (`docs/index.html`).
+- [x] **Author list** — final author list in `CITATION.cff`, the seven HF cards, and the project page hero.
 - [ ] **Project website polish** — the static site under [`docs/`](./docs) is live at [`ucsc-vlaa.github.io/VLM-CapCurriculum`](https://ucsc-vlaa.github.io/VLM-CapCurriculum). Open placeholders to fill once the paper is ready:
-  - "Author list TBD" line in the hero (`docs/index.html`)
   - the **Paper** button in the hero — currently links to `#`
-  - BibTeX block in the *Cite* section — `author = {TBD}`
   - longer-term: replace the static result tables with rendered numbers pulled from `eval-results/` once that dataset exists.
 
 If any of these block your reproduction, please open an issue.
