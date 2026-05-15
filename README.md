@@ -8,8 +8,10 @@
 
 [![Paper](https://img.shields.io/badge/Paper-ICML%202026-b31b1b)](#citation)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![HF Collection](https://img.shields.io/badge/🤗%20HF-Collection-yellow)](#resources)
-[![Website](https://img.shields.io/badge/Project-Page-green)](#resources)
+[![🤗 HF Collection](https://img.shields.io/badge/🤗%20HF-Collection-yellow)](https://huggingface.co/collections/UCSC-VLAA/vlm-capcurriculum-from-seeing-to-thinking-icml-2026-6a07691f944148ccb2b183b8)
+[![Project Page](https://img.shields.io/badge/Project-Page-green)](https://ucsc-vlaa.github.io/VLM-CapCurriculum)
+
+🌐 **Project page**: [**ucsc-vlaa.github.io/VLM-CapCurriculum**](https://ucsc-vlaa.github.io/VLM-CapCurriculum)
 
 </div>
 
@@ -128,7 +130,7 @@ The repo is **paper-specific** — it does not vendor [EasyR1](https://github.co
   - [`UCSC-VLAA/VLM-CapCurriculum-Perception-Data`](https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-Perception-Data) — Stage 1 (synthesised + filtered DOCCI MCQs)
   - [`UCSC-VLAA/VLM-CapCurriculum-TextReasoning-Data`](https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-TextReasoning-Data) — Stage 2 (ORZ-Math-13k)
   - [`UCSC-VLAA/VLM-CapCurriculum-VisualReasoning-Data`](https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-VisualReasoning-Data) — Stage 3 (CLEVR-Math + GeoQA170K + Math PUMA + ArxivQA)
-- 🌐 **Project page**: [ucsc-vlaa.github.io/VLM-CapCurriculum](https://ucsc-vlaa.github.io/VLM-CapCurriculum) *(coming soon — see Roadmap below)*
+- 🌐 **Project page**: [**ucsc-vlaa.github.io/VLM-CapCurriculum**](https://ucsc-vlaa.github.io/VLM-CapCurriculum) — interactive headline tables, case study figures, downloadable resources.
 
 ---
 
