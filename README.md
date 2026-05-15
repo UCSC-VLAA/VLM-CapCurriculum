@@ -128,7 +128,22 @@ The repo is **paper-specific** — it does not vendor [EasyR1](https://github.co
   - [`UCSC-VLAA/VLM-CapCurriculum-Perception-Data`](https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-Perception-Data) — Stage 1 (synthesised + filtered DOCCI MCQs)
   - [`UCSC-VLAA/VLM-CapCurriculum-TextReasoning-Data`](https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-TextReasoning-Data) — Stage 2 (ORZ-Math-13k)
   - [`UCSC-VLAA/VLM-CapCurriculum-VisualReasoning-Data`](https://huggingface.co/datasets/UCSC-VLAA/VLM-CapCurriculum-VisualReasoning-Data) — Stage 3 (CLEVR-Math + GeoQA170K + Math PUMA + ArxivQA)
-- 🌐 **Project page**: [ucsc-vlaa.github.io/VLM-CapCurriculum](https://ucsc-vlaa.github.io/VLM-CapCurriculum) *(coming soon)*
+- 🌐 **Project page**: [ucsc-vlaa.github.io/VLM-CapCurriculum](https://ucsc-vlaa.github.io/VLM-CapCurriculum) *(coming soon — see Roadmap below)*
+
+---
+
+## Roadmap
+
+A few items are intentionally still in flight at first release. We track them here so contributors and readers know what to expect:
+
+- [ ] **Paper URL** — replace the OpenReview/arXiv placeholder once the camera-ready link is live. Touches: `CITATION.cff`, all four HF model cards, all three HF dataset cards.
+- [ ] **Author list** — replace the `TBD` author entries with the final author names + affiliations once de-anonymized. Touches: `CITATION.cff`, all seven HF cards.
+- [ ] **Project website** — populate [`ucsc-vlaa.github.io/VLM-CapCurriculum`](https://ucsc-vlaa.github.io/VLM-CapCurriculum) with a teaser, the headline tables, the staged-vs-merged case study figure, and download buttons that point at the HF collection. Plan: a small static site under a `docs/` (or `gh-pages`) branch in this repo.
+- [ ] **End-to-end smoke run** — boot the released `Qwen3-VL-8B-Staged` weights via the supplied `evaluation/serve_examples/serve_qwen3_vl_8b_staged.sh` and reproduce the Table 1 main numbers via `evaluation/run_eval.sh`. Document any version-pin gotchas.
+- [ ] **Optional `eval-results` dataset** — upload the raw VLMEvalKit outputs + Claude judge logs (per-sample, per-benchmark) as a fourth dataset repo, so others can audit the headline scores without re-running inference.
+- [ ] **Pinned versions** — emit a `requirements-pinned.txt` (vllm, transformers, EasyR1 commit, VLMEvalKit commit) once we re-verify the smoke run on a fresh box.
+
+If any of these block your reproduction, please open an issue.
 
 ---
 
