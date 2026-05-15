@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtualenv / conda
+.venv/
+venv/
+env/
+
+# Logs / runtime
+wandb/
+checkpoints/
+outputs/
+*.log
+*.out
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Heavy artifacts that should live on HF/local cache, not git
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+*.tar
+*.tar.gz
+data/
+images_downsampled_2x/
+
+# Local notes / drafts
+NOTES.md
+TODO.md

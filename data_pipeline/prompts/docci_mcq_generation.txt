@@ -1,0 +1,47 @@
+You are an assessment-item writer.
+Your job is to create a single multiple-choice question (MCQ) that can only be answered by carefully understanding the image described below.
+
+# Image description
+{description}
+
+# Your task
+1. Read the description attentively.
+2. Write one question that targets either
+    - a spatial relationship in the image (e.g., relative positions, directions, sizes, distances), or
+    - a fine detail visible in the scene (e.g., colors, numbers, small objects, text).
+3. Create four answer options (keys A, B, C, D) that all sound plausible but only one is correct.
+    - Make the distractors non-trivial: a casual glance at the description should not reveal the answer.
+    - Match the wording and specificity of the correct answer.
+4. Mark the correct option with the field answer, whose value is the single capital letter A / B / C / D.
+5. Return your result only as JSON inside a Markdown code block fenced with ```json — no additional text.
+
+# Output schema
+```json
+{{
+  "question": "string",
+  "options": {{
+    "A": "string",
+    "B": "string",
+    "C": "string",
+    "D": "string"
+  }},
+  "answer": "A|B|C|D"
+}}
+```
+
+# Example output
+```json
+{{
+  "question": "What is located directly to the left of the red bicycle in the image?",
+  "options": {{
+    "A": "A yellow fire hydrant",
+    "B": "A blue mailbox",
+    "C": "A green trash bin",
+    "D": "A small potted plant"
+  }},
+  "answer": "C"
+}}
+```
+
+# Reminder
+Output nothing except the single json-fenced code block containing your object, with double-quoted keys and values, and exactly four options labeled A-D.

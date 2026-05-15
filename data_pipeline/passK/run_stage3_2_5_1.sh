@@ -1,0 +1,14 @@
+CUDA_VISIBLE_DEVICES=0,1,2,3 python run_inference.py \
+    --model_name qwen2_5-vl \
+    --model_path Qwen/Qwen2.5-VL-7B-Instruct  \
+    --tensor_parallel_size 4 \
+    --dataset_type vqa \
+    --dataset_path /fsx-shared/juncheng/dataset/VLM/merge_stage/visual_reasoning_train.jsonl \
+    --image_dir /fsx-shared/juncheng/dataset/VLM/ \
+    --k 16 \
+    --temperature 0.7 \
+    --max_new_tokens 1024 \
+    --num_samples 8000 \
+    --start_idx 0 \
+    --save_freq 1000 \
+    --output_path results_2_5/stage3/visual_reasoning_train.jsonl

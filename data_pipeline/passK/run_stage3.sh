@@ -1,0 +1,13 @@
+python run_inference.py \
+    --model_name qwen3-vl \
+    --model_path Qwen/Qwen3-VL-8B-Instruct \
+    --tensor_parallel_size 8 \
+    --dataset_type vqa \
+    --dataset_path /fsx-shared/juncheng/dataset/VLM/merge_stage/visual_reasoning_train.jsonl \
+    --image_dir /fsx-shared/juncheng/dataset/VLM/ \
+    --k 16 \
+    --temperature 0.7 \
+    --max_new_tokens 1024 \
+    --start_idx 0 \
+    --save_freq 1000 \
+    --output_path results/stage3/visual_reasoning_train.jsonl

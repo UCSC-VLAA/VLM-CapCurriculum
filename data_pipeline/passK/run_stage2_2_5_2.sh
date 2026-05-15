@@ -1,0 +1,13 @@
+CUDA_VISIBLE_DEVICES=2,3 python run_inference.py \
+    --model_name qwen2_5-vl \
+    --model_path Qwen/Qwen2.5-VL-7B-Instruct  \
+    --tensor_parallel_size 2 \
+    --dataset_type text_qa \
+    --dataset_path /fsx-shared/juncheng/dataset/VLM/merge_stage/textual_reasoning_train.jsonl \
+    --k 16 \
+    --temperature 0.7 \
+    --max_new_tokens 1024 \
+    --save_freq 1000 \
+    --start_idx 4000 \
+    --num_samples 4000 \
+    --output_path results_2_5/stage2/textual_reasoning_train.jsonl

@@ -1,0 +1,14 @@
+# Paper-side dependencies. EasyR1 / VLMEvalKit have their own requirements;
+# install them following each project's instructions before running the
+# training and evaluation steps.
+
+# Data pipeline (Stage 1 perception data synthesis)
+vllm>=0.6.0
+transformers>=4.45.0
+datasets>=2.20.0
+huggingface_hub>=0.24.0
+Pillow>=10.0.0
+tqdm
+
+# Optional: Claude-as-judge for perception error analysis
+anthropic>=0.40.0

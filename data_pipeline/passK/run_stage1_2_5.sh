@@ -1,0 +1,12 @@
+CUDA_VISIBLE_DEVICES=6,7 python run_inference.py \
+    --model_name qwen2_5-vl \
+    --model_path Qwen/Qwen2.5-VL-7B-Instruct  \
+    --tensor_parallel_size 2 \
+    --dataset_type vqa \
+    --dataset_path /fsx-shared/juncheng/dataset/VLM/merge_stage/perception_train.jsonl \
+    --image_dir /fsx-shared/juncheng/dataset/VLM/ \
+    --k 16 \
+    --temperature 0.7 \
+    --max_new_tokens 1024 \
+    --save_freq 100 \
+    --output_path results_2_5/stage1/perception_train.jsonl

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: "From Seeing to Thinking: Decoupling Perception and Reasoning Improves Post-Training of Vision-Language Models"
+message: "If you use this code or data, please cite the paper."
+type: software
+authors:
+  - family-names: TBD
+    given-names: TBD
+preferred-citation:
+  type: conference-paper
+  title: "From Seeing to Thinking: Decoupling Perception and Reasoning Improves Post-Training of Vision-Language Models"
+  authors:
+    - family-names: TBD
+      given-names: TBD
+  year: 2026
+  conference:
+    name: "International Conference on Machine Learning (ICML)"
+repository-code: "https://github.com/UCSC-VLAA/VLM-CapCurriculum"
+license: Apache-2.0
