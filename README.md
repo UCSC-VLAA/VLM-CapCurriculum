@@ -6,7 +6,7 @@
 
 *See first, then think — and treat **capability** as a new curriculum axis.*
 
-[![Paper](https://img.shields.io/badge/Paper-ICML%202026-b31b1b)](#citation)
+[![arXiv](https://img.shields.io/badge/arXiv-2605.20177-b31b1b)](https://arxiv.org/abs/2605.20177)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![🤗 HF Collection](https://img.shields.io/badge/🤗%20HF-Collection-yellow)](https://huggingface.co/collections/UCSC-VLAA/vlm-capcurriculum-from-seeing-to-thinking-icml-2026-6a07691f944148ccb2b183b8)
 [![Project Page](https://img.shields.io/badge/Project-Page-green)](https://ucsc-vlaa.github.io/VLM-CapCurriculum)
@@ -134,20 +134,6 @@ The repo is **paper-specific** — it does not vendor [EasyR1](https://github.co
 
 ---
 
-## Roadmap
-
-A few items are intentionally still in flight at first release. We track them here so contributors and readers know what to expect:
-
-- [ ] **Paper URL** — replace the OpenReview/arXiv placeholder once the camera-ready link is live. Touches: `CITATION.cff`, all four HF model cards, all three HF dataset cards, the project page hero.
-- [x] **Author list** — final author list in `CITATION.cff`, the seven HF cards, and the project page hero.
-- [ ] **Project website polish** — the static site under [`docs/`](./docs) is live at [`ucsc-vlaa.github.io/VLM-CapCurriculum`](https://ucsc-vlaa.github.io/VLM-CapCurriculum). Open placeholders to fill once the paper is ready:
-  - the **Paper** button in the hero — currently links to `#`
-  - longer-term: replace the static result tables with rendered numbers pulled from `eval-results/` once that dataset exists.
-
-If any of these block your reproduction, please open an issue.
-
----
-
 ## Setup
 
 ```bash
@@ -214,9 +200,13 @@ For more granular runs (per-stage, ablations, other backbones) see `training/exa
 ```bibtex
 @inproceedings{vlmcapcurriculum2026,
   title  = {From Seeing to Thinking: Decoupling Perception and Reasoning Improves Post-Training of Vision-Language Models},
-  author = {TODO},
+  author = {Wu, Juncheng and Chen, Hardy and Tu, Haoqin and Tang, Xianfeng and Shi, Freda and Liu, Hui and Lu, Hanqing and Xie, Cihang and Zhou, Yuyin},
   booktitle = {Proceedings of the International Conference on Machine Learning (ICML)},
-  year   = {2026}
+  year   = {2026},
+  eprint = {2605.20177},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CV},
+  url    = {https://arxiv.org/abs/2605.20177}
 }
 ```
 

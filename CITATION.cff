@@ -32,6 +32,7 @@ authors:
 preferred-citation:
   type: conference-paper
   title: "From Seeing to Thinking: Decoupling Perception and Reasoning Improves Post-Training of Vision-Language Models"
+  url: "https://arxiv.org/abs/2605.20177"
   authors:
     - family-names: Wu
       given-names: Juncheng
