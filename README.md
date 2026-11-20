@@ -89,7 +89,7 @@ Visual math = MathVista / MathVision / MathVerse(VI) / WeMath. Perception = A-OK
 | Qwen2.5-VL-7B | +1.62 |
 | InternVL3.5-8B | +0.95 |
 
-(see `docs/results.md` for the full extended-benchmark table from the paper appendix.)
+(see Table 10 in the paper appendix for the full extended-benchmark table across all four backbones.)
 
 *(For the additive Capability × Difficulty result, see [§ A new curriculum dimension](#a-new-curriculum-dimension) above.)*
 
@@ -105,12 +105,9 @@ VLM-CapCurriculum/
 │   ├── reward_functions/
 │   └── format_prompts/
 ├── evaluation/         # VLMEvalKit configs + Claude-Haiku-4.5 judge setup
-│   └── perception_error_analysis/   # Sec 4.4 analysis pipeline
 ├── scripts/
 │   └── quickstart_qwen3vl_8b_staged.sh    # one-shot stage1→2→3
-├── docs/
-│   ├── images/         # paper figures (teaser, pipeline, case study)
-│   └── results.md      # full benchmark tables
+├── docs/               # project page (index.html) + paper figures (images/)
 └── requirements.txt
 ```
 
@@ -189,7 +186,6 @@ For more granular runs (per-stage, ablations, other backbones) see `training/exa
 | Per-stage training scripts | [`training/examples/`](training/examples/) |
 | Reward functions & prompt templates | [`training/reward_functions/`](training/reward_functions/), [`training/format_prompts/`](training/format_prompts/) |
 | VLMEvalKit configs & judge setup | [`evaluation/README.md`](evaluation/README.md) |
-| Sec 4.4 perception-error analysis | [`evaluation/perception_error_analysis/`](evaluation/perception_error_analysis/) |
 | Ablations (stage order, encoder freezing, SFT vs RL) | [`training/examples/ablations/`](training/examples/ablations/) |
 | Difficulty + Capability curriculum (Sec 4.5) | [`training/examples/curriculum/`](training/examples/curriculum/) |
 

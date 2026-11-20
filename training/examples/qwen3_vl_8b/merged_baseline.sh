@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merged-training baseline for Qwen3-VL-8B (Section 3.3.2 of the paper).
+# Merged-training baseline for Qwen3-VL-8B (Section 3.2.2 of the paper).
 # All three stages' data are pooled and shuffled, then trained jointly for the
 # same total number of steps as the staged recipe.
 #

@@ -102,8 +102,9 @@ and ``CUDA_VISIBLE_DEVICES=`` overrides.
 ## Unified system prompt
 
 Every Staged and Merged release uses one prompt at evaluation time — the
-exact prompt the model was trained against (see
-`training/format_prompts/math.jinja`):
+same instruction the model was trained with (see
+`training/format_prompts/math.jinja`; during training it is appended to the
+user turn after the problem, here it is passed as the system prompt):
 
 ```
 You FIRST think about the reasoning process as an internal monologue and

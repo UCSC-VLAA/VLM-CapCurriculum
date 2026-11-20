@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ablation: apply Stage 3 only to the base Qwen3-VL-8B (Table 2, "Stage 3" row).
+# Ablation: apply Stage 3 only to the base Qwen3-VL-8B (Appendix Table 7, "Stage 3" row).
 set -euo pipefail
 
 : "${EASYR1_HOME:?Run 'source training/_env.sh' first}"

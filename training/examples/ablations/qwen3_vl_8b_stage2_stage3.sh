@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ablation: skip Stage 1 — train only Stage 2 → Stage 3 (Table 2 row "Stage 2→3").
+# Ablation: skip Stage 1 — train only Stage 2 → Stage 3 (Appendix Table 7 row "Stage 2→3").
 # Set MODEL_PATH to the Stage-2 (textual reasoning) checkpoint.
 set -euo pipefail
 

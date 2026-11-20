@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stage-order 3→2→1 ablation on Qwen2.5-VL-7B (Table 5).
+# Stage-order 3→2→1 ablation on Qwen2.5-VL-7B (Table 3).
 # Set MODEL_PATH to the post-Stage-2 checkpoint of the 3→2 chain.
 set -euo pipefail
 

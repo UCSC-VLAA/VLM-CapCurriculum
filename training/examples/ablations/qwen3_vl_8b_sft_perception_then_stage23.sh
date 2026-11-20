@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SFT vs RLVR for Stage 1 (perception) — caption-SFT baseline (Table 6).
+# SFT vs RLVR for Stage 1 (perception) — caption-SFT baseline (Table 4).
 #
 # Stage 1 SFT is run with LLaMA-Factory (not EasyR1) because GRPO is replaced
 # by next-token captioning supervision. After SFT, Stage 2 and Stage 3 follow
@@ -21,7 +21,7 @@
 #
 # This script is intentionally print-only — running it just prints the recipe.
 cat <<'EOF'
-SFT vs RLVR ablation (paper Section 4.4 / Table 6) — recipe:
+SFT vs RLVR ablation (paper Section 4.4 / Table 4) — recipe:
 
  1) Build caption-SFT dataset from DOCCI captions:
        python data_pipeline/sft/make_caption_sft.py \

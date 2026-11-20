@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merged baseline with FROZEN vision tower for Qwen2.5-VL-7B (Appendix Table —
+# Merged baseline with FROZEN vision tower for Qwen2.5-VL-7B (Appendix Table 8 —
 # vision-encoder freezing ablation).
 set -euo pipefail
 

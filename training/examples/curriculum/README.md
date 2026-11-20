@@ -1,4 +1,4 @@
-# Curriculum experiments (paper Section 4.5, Table 7)
+# Curriculum experiments (paper Section 4.5, Table 5)
 
 Four configurations on Qwen3-VL-8B that probe the *capability axis × difficulty
 axis* design space. The only practical difference between them is the input
