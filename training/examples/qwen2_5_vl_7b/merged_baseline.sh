@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merged-training baseline for Qwen2.5-VL-7B (Section 3.3.2 of the paper).
+# Merged-training baseline for Qwen2.5-VL-7B (Section 3.2.2 of the paper).
 # Usage:  source training/_env.sh && bash training/examples/qwen2_5_vl_7b/merged_baseline.sh
 set -euo pipefail
 

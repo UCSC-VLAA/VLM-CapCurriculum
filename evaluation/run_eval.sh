@@ -32,8 +32,8 @@ cd "${VLMEVALKIT_HOME}"
 # ---------------------------------------------------------------------------
 # Benchmark groups (matches the paper)
 #   Main     — Table 1 main comparison
-#   Extended — Appendix Table 9 (extended benchmarks)
-#   Curriculum — Section 4.5, Table 7
+#   Extended — Appendix Table 10 (extended benchmarks)
+#   Curriculum — Section 4.5, Table 5
 #   All      — union (deduplicated)
 # ---------------------------------------------------------------------------
 MAIN_BENCH=(

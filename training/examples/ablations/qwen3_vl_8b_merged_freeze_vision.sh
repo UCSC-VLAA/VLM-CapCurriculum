@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merged-baseline with FROZEN vision tower (Appendix Table — vision-encoder
+# Merged-baseline with FROZEN vision tower (Appendix Table 8 — vision-encoder
 # freezing ablation). All other knobs match merged_baseline.sh.
 set -euo pipefail
 

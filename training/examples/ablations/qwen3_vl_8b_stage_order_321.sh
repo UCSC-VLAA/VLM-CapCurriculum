@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stage-order ablation 3→2→1 on Qwen3-VL-8B (Table 5).
+# Stage-order ablation 3→2→1 on Qwen3-VL-8B (Table 3).
 # This is the "reversed" run: visual reasoning → textual reasoning → perception.
 # It is exposed as one shell helper that simply executes Stage 1 (perception) on
 # top of a pre-trained Stage-3 → Stage-2 chain. To launch the full reversed

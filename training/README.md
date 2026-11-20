@@ -73,6 +73,21 @@ Earlier internal experiments tried per-stage formats (e.g. `<description>`
 tags for Stage 1, `<description><think><answer>` for Stage 3) but they were
 **not** the configuration that produced the paper's reported numbers.
 
+**Where the prompt goes.** The paper (Fig. 9) calls this the system prompt,
+but in RL training EasyR1 renders `format_prompts/math.jinja` as
+`{problem} + <instruction>`, i.e. the instruction is appended to the *user*
+turn right after the problem text. At evaluation it is passed as the system
+prompt. The training template is kept verbatim from EasyR1, including its
+`<thinking> reasoning here </thinking>` example. The reward only checks
+`<think>...</think> ... \boxed{...}` (`reward_functions/math.py`).
+
+**Inline answer-format hints in the data.** Some `problem` fields inherited
+from the source datasets contain hints such as "Provide your answer solely as
+the option letter". Because the template instruction comes last and the
+reward requires the `<think>` + `\boxed{}` format (and grades only the
+content of `\boxed{}`), these hints in effect only constrain what goes
+inside the box, e.g. `<think>...</think> \boxed{C}`.
+
 ## Per-backbone notes
 
 - **Qwen3-VL-8B / Qwen2.5-VL-7B** — vanilla GRPO settings, vision tower open
